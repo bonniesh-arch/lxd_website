@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Test - Debug</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="page">
+        <a href="dashboard.html" class="btn-back">←</a>
+        <header id="header" style="padding: 1.5rem 2rem; border-bottom: 3px solid var(--warm-gray);">
+            <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-family: var(--font-serif); margin: 0; font-size: 2.4rem;">Crazy 8s - Test</h2>
+            </div>
+        </header>
+
+        <main id="main-content" class="container" style="padding: 2.5rem 0; flex: 1;"></main>
+    </div>
+
+    <script>
+        console.log('🔧 Test page loaded');
+        
+        // Minimal state
+        const TestState = {
+            render: function() {
+                console.log('🎨 Rendering test content...');
+                const content = document.getElementById('main-content');
+                if (!content) {
+                    console.error('❌ Could not find main-content element');
+                    return;
+                }
+                console.log('✅ Found main-content element');
+                
+                content.innerHTML = `
+                    <div class="stage-container fade-in">
+                        <h1>Test Content Loaded!</h1>
+                        <p>If you can see this, the rendering system works.</p>
+                    </div>
+                `;
+                console.log('✅ Content set successfully');
+            }
+        };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 DOMContentLoaded event fired');
+            TestState.render();
+        });
+    </script>
+</body>
+</html>
