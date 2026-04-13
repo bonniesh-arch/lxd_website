@@ -769,7 +769,7 @@ p {
   grid-template-columns: 1fr auto;
   gap: 3rem;
   align-items: start;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   padding-bottom: 2rem;
   border-bottom: 2px solid var(--light-gray);
 }
@@ -965,7 +965,7 @@ p {
   align-items: flex-start;
   gap: 1rem;
   padding: 1.5rem;
-  border: 2px solid var(--ink);
+  border: 2px solid var(--warm-gray);
   border-radius: 8px;
   cursor: pointer;
   transition: all var(--transition-smooth);

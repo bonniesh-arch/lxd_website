@@ -4,7 +4,7 @@ console.log('✅ activity.js loaded');
 // State Management for 8-Stage Guided Activity Flow
 const ActivityState = {
   currentStage: 1,
-  designChallenge: "Reimagine how people interact with everyday digital notifications.", // Always have a default
+  designChallenge: null, // Will be set during initialize
   ideas: [], // Array of 8 ideas
   selectedIdeaIndex: null,
   selectedIdeaJustification: {
@@ -26,47 +26,35 @@ const ActivityState = {
   
   async initialize() {
     console.log('⚙️ initialize() called');
-    // Set a fallback challenge immediately
-    if (!this.designChallenge) {
-      this.designChallenge = "Reimagine how people interact with everyday digital notifications.";
-    }
-    // Try to fetch a new one but don't block rendering
-    try {
-      await this.getDesignChallenge();
-    } catch (error) {
-      console.error('Challenge fetch error:', error);
-    }
+    // Get a random challenge from the list
+    this.getDesignChallenge();
+    console.log('✅ Challenge set:', this.designChallenge);
   },
 
-  async getDesignChallenge() {
+  getDesignChallenge() {
     console.log('🔄 getDesignChallenge() called');
-    // Generate a design challenge using the backend
-    try {
-      const response = await fetch('http://localhost:3001/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: `Generate a single, specific, slightly ambiguous real-world design challenge suitable for a creative ideation exercise. 
-                    Format: Just provide the challenge prompt in 2-3 sentences. Make it open-ended but concrete.
-                    Example: "Design a way for strangers in a waiting room to feel more connected. What would that look like?"`,
-          conversationHistory: []
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API responded with ${response.status}`);
-      }
-      
-      const data = await response.json();
-      if (data.message) {
-        console.log('📥 Got new challenge from API');
-        this.designChallenge = data.message;
-      }
-      return this.designChallenge;
-    } catch (error) {
-      console.error('Error fetching challenge:', error);
-      return this.designChallenge;
-    }
+    
+    // Predefined list of design challenges
+    const challenges = [
+      'Design a tool to help users stay connected with friends or family regularly.',
+      'Design a tool to help users reduce clutter without throwing things away.',
+      'Design a tool to help users remember what they need before leaving home.',
+      'Design a tool to help people keep their space organized effortlessly.',
+      'Design a tool to help users stay motivated during long tasks.',
+      'Design a tool to help people calm down when they feel stressed.',
+      'Design a tool to help users build a daily habit.',
+      'Design a tool to help people break a bad habit.',
+      'Design a tool to help people remember to do small but important tasks.',
+      'Design a desk tool to help people stay focused while working.',
+      'Design a tool to help users start tasks when they feel unmotivated.'
+    ];
+    
+    // Pick a random challenge from the list
+    const randomIndex = Math.floor(Math.random() * challenges.length);
+    this.designChallenge = challenges[randomIndex];
+    
+    console.log('📥 Got random challenge:', this.designChallenge);
+    return this.designChallenge;
   },
 
   goToStage(stageNum) {
@@ -888,6 +876,15 @@ const StageFinalReport = {
     const messagesCount = ActivityState.aiConversation.totalMessages;
     const promptTypes = Array.from(ActivityState.aiConversation.promptTypes);
 
+    // Get the justification responses
+    const whyChosen = ActivityState.selectedIdeaJustification.why;
+    const challenges = ActivityState.selectedIdeaJustification.challenges;
+
+    // Get the reflection responses
+    const whatHelped = ActivityState.aiReflection.whatHelped;
+    const whatDidntWork = ActivityState.aiReflection.whatDidntWork;
+    const acceptedSuggestions = ActivityState.aiReflection.acceptedSuggestions;
+
     const insights = [
       "How did AI change your thinking process?",
       "When would you choose NOT to use AI in the future?",
@@ -931,6 +928,51 @@ const StageFinalReport = {
                     <div class="evolution-label">Final Idea</div>
                     <div class="evolution-content">${revisedIdea}</div>
                   </div>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">🤔 Why You Chose This Idea</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p><strong>Your reasoning:</strong></p>
+                  <p style="line-height: 1.6;">${whyChosen}</p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">⚠️ Challenges You Identified</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p><strong>Uncertainties & concerns:</strong></p>
+                  <p style="line-height: 1.6;">${challenges}</p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">💬 AI Collaboration Exchange</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p><strong>Messages exchanged:</strong> <span style="font-weight: 800; color: var(--accent-primary);">${messagesCount} message${messagesCount !== 1 ? 's' : ''}</span></p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">✨ How AI Helped You</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p style="line-height: 1.6;">${whatHelped}</p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">🎯 Where AI Fell Short</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p style="line-height: 1.6;">${whatDidntWork}</p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">🔄 Your AI Decisions</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p><strong>Suggestions you accepted vs. rejected:</strong></p>
+                  <p style="line-height: 1.6;">${acceptedSuggestions}</p>
                 </div>
               </section>
 
