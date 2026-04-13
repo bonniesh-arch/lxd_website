@@ -506,7 +506,7 @@ const StageAICollaboration = {
 
         <div class="stage-content">
           <div class="ai-chat-interface">
-            <div class="stage-title" style="margin-bottom: 0.5rem; font-size: 1.3rem;">Refine Your Idea with AI</div>
+            <h1 class="stage-title">Refine Your Idea with AI</h1>
             
             <div class="chat-wrapper">
               <div class="messages-list">
@@ -644,7 +644,20 @@ const StageAICollaboration = {
       });
 
       const data = await response.json();
-      ActivityState.addAIMessage('ai', data.message);
+      console.log('API Response:', data);
+      
+      if (!response.ok) {
+        throw new Error(data.error || `API error: ${response.status}`);
+      }
+      
+      if (data.success && data.message) {
+        ActivityState.addAIMessage('ai', data.message);
+      } else if (data.message) {
+        ActivityState.addAIMessage('ai', data.message);
+      } else {
+        throw new Error('No message in API response');
+      }
+      
       StageAICollaboration.render();
     } catch (error) {
       console.error('Error getting AI response:', error);
