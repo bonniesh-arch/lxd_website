@@ -2,6 +2,7 @@ let ideas = Array(8).fill('');
 let timerActive = false;
 let timeRemaining = 480; // 8 minutes in seconds
 let currentTask = '';
+let timerInterval = null; // Store interval globally
 
 function generateTask() {
   currentTask = generateRandomTask();
@@ -10,14 +11,24 @@ function generateTask() {
 
 function startTimer() {
   timerActive = !timerActive;
+  
+  // Clear any existing interval before starting a new one
+  if (timerInterval !== null) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  
   if (timerActive) {
-    const timerInterval = setInterval(() => {
+    timerInterval = setInterval(() => {
       if (timerActive && timeRemaining > 0) {
         timeRemaining--;
         updateTimerDisplay();
       } else if (timeRemaining === 0) {
         timerActive = false;
-        clearInterval(timerInterval);
+        if (timerInterval !== null) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
       }
     }, 1000);
   }
@@ -39,36 +50,36 @@ function renderIdeation() {
   const content = document.getElementById('main-content');
 
   content.innerHTML = `
-    <div class="fade-up" style="max-width: 800px; margin: 0 auto;">
-      <div style="margin-bottom: 2rem;">
-        <h1 style="font-family: var(--font-serif); font-size: 2rem; margin-bottom: 1rem;">Your Design Challenge</h1>
-        <div style="background: var(--accent); color: white; padding: 1.5rem; border-radius: 6px; margin-bottom: 2rem;">
+    <div class="fade-up" style="max-width: 1000px; margin: 0 auto; display: block;">
+      <div style="margin-bottom: 1.5rem; flex-shrink: 0;">
+        <h1 style="font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 0.8rem;">Your Design Challenge</h1>
+        <div style="background: var(--accent-primary); color: white; padding: 1.2rem; border-radius: 6px; margin-bottom: 1.5rem;">
           <div style="font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">AI-Generated Task:</div>
-          <div style="font-size: 1.3rem; font-family: var(--font-serif); font-weight: 600;">${currentTask}</div>
+          <div style="font-size: 1.2rem; font-family: var(--font-serif); font-weight: 600;">${currentTask}</div>
         </div>
 
-        <h2 style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 1rem;">Generate Your 8 Ideas</h2>
-        <p style="color: var(--mid-gray); margin: 0; margin-bottom: 1.5rem;">Write down 8 ideas in 8 minutes. Don't overthink—quantity over quality!</p>
+        <h2 style="font-family: var(--font-serif); font-size: 1.1rem; margin-bottom: 0.5rem;">Generate Your 8 Ideas</h2>
+        <p style="color: var(--mid-gray); margin: 0; margin-bottom: 1rem; font-size: 0.95rem;">Write down 8 ideas in 8 minutes. Don't overthink—quantity over quality!</p>
         
-        <button class="btn ${timerActive ? 'btn-primary' : 'btn-secondary'}" onclick="startTimer()" style="margin-bottom: 2rem;">
+        <button class="btn ${timerActive ? 'btn-primary' : 'btn-secondary'}" onclick="startTimer()" style="margin-bottom: 1rem;">
           ${timerActive ? '⏸ Pause Timer' : '▶ Start 8-Minute Timer'}
         </button>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
         ${ideas.map((idea, idx) => `
           <div style="display: flex; flex-direction: column;">
-            <label style="font-weight: 500; margin-bottom: 0.5rem; color: var(--ink);">Idea ${idx + 1}</label>
+            <label style="font-weight: 500; margin-bottom: 0.3rem; color: var(--ink); font-size: 0.9rem;">Idea ${idx + 1}</label>
             <textarea 
               placeholder="Enter your idea..."
               onchange="updateIdea(${idx}, this.value)"
-              style="width: 100%; min-height: 120px; padding: 1rem; border: 1.5px solid var(--warm-gray); border-radius: 6px; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box;"
+              style="width: 100%; min-height: 80px; padding: 0.8rem; border: 1.5px solid var(--warm-gray); border-radius: 6px; font-family: var(--font-sans); font-size: 0.9rem; resize: none; box-sizing: border-box; background: white;"
             >${idea}</textarea>
           </div>
         `).join('')}
       </div>
 
-      <div style="display: flex; gap: 1rem; justify-content: center;">
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-shrink: 0;">
         <button class="btn btn-secondary" onclick="location.href='activity.html'">Back</button>
         <button class="btn btn-primary" onclick="proceedToSelection()">Next</button>
       </div>

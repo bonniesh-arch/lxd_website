@@ -596,6 +596,15 @@ const StageAICollaboration = {
     }
   },
 
+  toggleSuggestionsMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const menu = document.getElementById('suggestions-menu');
+    if (menu) {
+      menu.classList.toggle('hidden');
+    }
+  },
+
   closeSuggestionsMenu() {
     const menu = document.getElementById('suggestions-menu');
     if (menu) {

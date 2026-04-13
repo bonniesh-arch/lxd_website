@@ -33,7 +33,7 @@ function renderSelection() {
           return `
             <div 
               onclick="${isEmpty ? '' : `toggleIdea(${idx})`}"
-              style="cursor: ${isEmpty ? 'not-allowed' : 'pointer'}; padding: 1.5rem; border-radius: 6px; border: 2.5px solid ${isSelected ? 'var(--accent-primary)' : 'var(--warm-gray)'}; background: ${isSelected ? 'rgba(212, 36, 38, 0.06)' : isEmpty ? 'var(--light-gray)' : 'white'}; transition: all var(--transition-smooth); opacity: ${isEmpty ? 0.5 : 1}; box-shadow: ${isSelected ? '0 4px 12px rgba(212, 36, 38, 0.12)' : 'var(--shadow-sm)'};"
+              style="cursor: ${isEmpty ? 'not-allowed' : 'pointer'}; padding: 1.5rem; border-radius: 6px; border: 2.5px solid ${isSelected ? 'var(--accent-primary)' : 'var(--warm-gray)'}; background: ${isSelected ? 'rgba(212, 36, 38, 0.06)' : isEmpty ? 'var(--light-gray)' : 'var(--cream)'}; transition: all var(--transition-smooth); opacity: ${isEmpty ? 0.5 : 1}; box-shadow: ${isSelected ? '0 4px 12px rgba(212, 36, 38, 0.12)' : 'var(--shadow-sm)'}; "sm)'}; "
               onmouseover="if(!${isEmpty}) this.style.borderColor='var(--accent-primary)'; this.style.transform='translateY(-2px); this.style.boxShadow='0 6px 16px rgba(212, 36, 38, 0.15)';"
               onmouseout="if(!${isEmpty}) this.style.borderColor='${isSelected ? 'var(--accent-primary)' : 'var(--warm-gray)'}'; this.style.transform='scale(1); this.style.boxShadow='${isSelected ? '0 4px 12px rgba(212, 36, 38, 0.12)' : 'var(--shadow-sm)'}';"
             >

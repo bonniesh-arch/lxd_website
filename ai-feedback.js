@@ -34,23 +34,23 @@ function renderAiFeedback() {
   const content = document.getElementById('main-content');
   
   content.innerHTML = `
-    <div style="display: flex; flex-direction: column; height: calc(100vh - 80px); max-width: 900px; margin: 0 auto; width: 100%;">
+    <div style="max-width: 900px; margin: 0 auto; width: 100%;">
       <!-- Progress Bar -->
-      <div id="progress-container" style="margin-bottom: 1rem; flex-shrink: 0;"></div>
+      <div id="progress-container" style="margin-bottom: 1rem;"></div>
       
       <!-- Selected Idea Display -->
-      <div style="background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%); color: white; padding: 1.2rem; border-radius: 6px; margin-bottom: 1rem; box-shadow: 0 8px 24px rgba(212, 36, 38, 0.2); flex-shrink: 0;">
+      <div style="background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%); color: white; padding: 1.2rem; border-radius: 6px; margin-bottom: 1rem; box-shadow: 0 8px 24px rgba(212, 36, 38, 0.2);">
         <div style="font-size: 0.85rem; opacity: 0.95; margin-bottom: 0.4rem; font-weight: 600;">Your Selected Idea:</div>
         <div style="font-family: var(--font-serif); font-size: 1.1rem; font-weight: 600; line-height: 1.5;">${selectedIdea.idea}</div>
       </div>
 
       <!-- Chat Container -->
-      <div style="flex: 1; overflow-y: auto; margin-bottom: 1rem; background: var(--cream); border-radius: 6px; padding: 1.5rem; border: 1.5px solid var(--warm-gray); min-height: 600px;">
+      <div style="margin-bottom: 1rem; background: var(--cream); border-radius: 6px; padding: 1.5rem; border: 1.5px solid var(--warm-gray);">
         <div id="chat-container" style="display: flex; flex-direction: column; gap: 1rem;"></div>
       </div>
 
       <!-- Input Section -->
-      <div id="input-section" style="display: flex; flex-direction: column; gap: 1rem; flex-shrink: 0;"></div>
+      <div id="input-section" style="display: flex; flex-direction: column; gap: 1rem;"></div>
     </div>
   `;
   
@@ -95,7 +95,7 @@ function askNextQuestion() {
     if (userMessageCount >= MIN_MESSAGES) {
       // Show option to continue or proceed
       inputSection.innerHTML = `
-        <textarea id="user-response" placeholder="Type your response..." style="width: 100%; min-height: 100px; padding: 1rem; border: 1.5px solid var(--warm-gray); border-radius: 6px; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box;"></textarea>
+        <textarea id="user-response" placeholder="Type your response..." style="width: 100%; min-height: 100px; padding: 1rem; border: 1.5px solid var(--warm-gray); border-radius: 6px; background: white; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box;"></textarea>
         <div style="display: flex; gap: 1rem;">
           <button class="btn btn-primary" onclick="submitResponse()" style="flex: 1;">Continue Chatting</button>
           <button class="btn btn-secondary" onclick="proceedToInProgress()" style="flex: 1;">Next Step ➜</button>
@@ -104,7 +104,7 @@ function askNextQuestion() {
     } else {
       // Just show submit button (not at minimum yet)
       inputSection.innerHTML = `
-        <textarea id="user-response" placeholder="Type your response..." style="width: 100%; min-height: 100px; padding: 1rem; border: 1.5px solid var(--warm-gray); border-radius: 6px; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box;"></textarea>
+        <textarea id="user-response" placeholder="Type your response..." style="width: 100%; min-height: 100px; padding: 1rem; border: 1.5px solid var(--warm-gray); border-radius: 6px; background: white; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box;"></textarea>
         <button class="btn btn-primary" onclick="submitResponse()" style="align-self: flex-end;">Submit</button>
       `;
     }
