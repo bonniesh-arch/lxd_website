@@ -3,7 +3,9 @@ let allIdeas = JSON.parse(localStorage.getItem('ideas')) || [];
 let selectedIdea = JSON.parse(localStorage.getItem('selected-idea')) || {};
 let chatMessages = [];
 let integrationFinalIdea = '';
-const API_URL = 'http://localhost:3001';
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3001' 
+  : '';
 
 function renderIntegrationChat() {
   const content = document.getElementById('main-content');
@@ -134,15 +136,16 @@ ${otherIdeas.map((idea, i) => `${i + 1}. ${idea}`).join('\n')}
 
 Help the user explore how elements from other ideas can strengthen their refined concept. Be encouraging and ask clarifying questions about what elements they'd like to integrate.`;
 
-    const response = await fetch(`${API_URL}/chat`, {
+    const apiUrl = API_URL ? `${API_URL}/api/chat` : '/api/chat';
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemini-2.5-flash',
+        message: userMessage,
         system: systemPrompt,
-        messages: chatMessages.map(msg => ({
-          role: msg.role,
-          content: msg.content
+        conversationHistory: chatMessages.map(msg => ({
+          type: msg.role === 'user' ? 'user' : 'ai',
+          text: msg.content
         }))
       })
     });
@@ -152,6 +155,11 @@ Help the user explore how elements from other ideas can strengthen their refined
     }
 
     const data = await response.json();
+    
+    if (!data.success || !data.message) {
+      throw new Error(data.error || 'No message in response');
+    }
+    
     const aiMessage = data.message;
     
     chatMessages.push({

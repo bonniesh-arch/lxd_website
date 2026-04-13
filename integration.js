@@ -1,7 +1,9 @@
 let allIdeas = JSON.parse(localStorage.getItem('ideas')) || [];
 let selectedIdea = JSON.parse(localStorage.getItem('selected-idea')) || {};
 let refinementData = JSON.parse(localStorage.getItem('refinement-data')) || {};
-const API_URL = 'http://localhost:3001';
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3001' 
+  : '';
 
 function renderIntegration() {
   const content = document.getElementById('main-content');

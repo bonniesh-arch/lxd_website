@@ -618,7 +618,12 @@ const StageAICollaboration = {
     try {
       const systemPrompt = getAICollaboratorSystemPrompt(designChallenge, selectedIdea, allIdeas);
       
-      const response = await fetch('http://localhost:3001/api/chat', {
+      // Use relative path for Vercel, or localhost for local development
+      const apiUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3001/api/chat'
+        : '/api/chat';
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -638,6 +643,11 @@ const StageAICollaboration = {
         throw new Error(data.error || `API error: ${response.status}`);
       }
       
+      // Handle error responses from the server
+      if (data.success === false && data.error) {
+        throw new Error(data.error);
+      }
+      
       if (data.success && data.message) {
         ActivityState.addAIMessage('ai', data.message);
       } else if (data.message) {
@@ -649,7 +659,10 @@ const StageAICollaboration = {
       StageAICollaboration.render();
     } catch (error) {
       console.error('Error getting AI response:', error);
-      ActivityState.addAIMessage('ai', 'Sorry, I encountered an error. Please try again.');
+      const errorMessage = error.message.includes('high demand') 
+        ? 'The AI service is currently overloaded. Please try again in a moment.'
+        : error.message || 'Sorry, I encountered an error. Please try again.';
+      ActivityState.addAIMessage('ai', errorMessage);
       StageAICollaboration.render();
     }
   }

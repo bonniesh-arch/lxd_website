@@ -6,7 +6,9 @@ let userMessageCount = 0; // Count only user messages
 let phase = 'refinement'; // 'refinement', 'in-progress', 'integration', 'optional-integration'
 let inProgressIdea = '';
 let integrationResponse = null;
-const API_URL = 'http://localhost:3001';
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3001' 
+  : '';
 const questions = REFINEMENT_QUESTIONS;
 const MIN_MESSAGES = 2;
 const MAX_MESSAGES = 5;
@@ -152,7 +154,8 @@ async function fetchAiFeedback(userResponse) {
     // Add thinking indicator
     addAiMessage('🤔 Thinking...');
     
-    const response = await fetch(`${API_URL}/api/chat`, {
+    const apiUrl = API_URL ? `${API_URL}/api/chat` : '/api/chat';
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -226,7 +229,7 @@ async function fetchAiFeedback(userResponse) {
     }
   } catch (error) {
     console.error('Error:', error);
-    addAiMessage('Connection error. Please ensure your backend server is running on http://localhost:3001');
+    addAiMessage('Connection error. Please ensure your backend server is running or check your deployed service.');
     const inputSection = document.getElementById('input-section');
     inputSection.innerHTML = `
       <textarea id="user-response" placeholder="Type your response..." style="width: 100%; min-height: 100px; padding: 1rem; border: 1.5px solid var(--warm-gray); border-radius: 6px; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box;"></textarea>
