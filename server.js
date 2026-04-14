@@ -27,7 +27,7 @@ app.post('/api/chat', async (req, res) => {
       parts: [{ text: message }]
     });
 
-    // Build request body with optional system instruction
+    // Build request body
     const requestBody = {
       contents: contents,
       generationConfig: {
@@ -38,11 +38,12 @@ app.post('/api/chat', async (req, res) => {
       }
     };
 
-    // Add system instruction if provided
+    // Add system instruction if provided (integrated into first message if needed)
     if (system) {
-      requestBody.systemInstruction = {
-        parts: [{ text: system }]
-      };
+      // Prepend system prompt to the first user message
+      if (contents.length > 0) {
+        contents[0].parts[0].text = system + "\n\nUser message: " + contents[0].parts[0].text;
+      }
     }
 
     console.log('🔄 Sending to Google Gemini API...');

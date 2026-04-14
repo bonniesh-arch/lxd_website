@@ -9,16 +9,15 @@
 <body>
     <div id="app" class="page">
         <a href="index.html" class="btn-back">←</a>
-        <header id="header" style="padding: 1.5rem 2rem; border-bottom: 3px solid var(--warm-gray);">
-            <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="font-family: var(--font-serif); margin: 0; font-size: 2.4rem;">Discovery Quiz</h2>
+        <header id="header" style="padding: 1.5rem 2rem; flex-shrink: 0;">
+            <div class="container" style="display: flex; justify-content: flex-end; align-items: center;">
                 <div style="width: 120px; height: 4px; background: var(--light-gray); border-radius: 2px; overflow: hidden; box-shadow: 0 2px 8px rgba(212,36,38,0.1);">
                     <div id="progress-fill" style="height: 100%; background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%); width: 0%; transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
                 </div>
             </div>
         </header>
 
-        <main id="main-content" class="container" style="padding: 2.5rem 0; flex: 1;"></main>
+        <main id="main-content" class="container" style="padding: 2.5rem 0;"></main>
     </div>
 
     <script src="discover.js"></script>

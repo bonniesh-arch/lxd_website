@@ -3,14 +3,16 @@ let allIdeas = JSON.parse(localStorage.getItem('ideas')) || [];
 let selectedIdea = JSON.parse(localStorage.getItem('selected-idea')) || {};
 let chatMessages = [];
 let integrationFinalIdea = '';
-const API_URL = 'http://localhost:3001';
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3001' 
+  : '';
 
 function renderIntegrationChat() {
   const content = document.getElementById('main-content');
   const inProgressIdea = refinementData.inProgressIdea || '';
   
   content.innerHTML = `
-    <div style="display: flex; flex-direction: column; height: 100%; max-width: 900px; margin: 0 auto; width: 100%;">
+    <div style="max-width: 900px; margin: 0 auto; width: 100%;">
       <!-- Info Section -->
       <div style="margin-bottom: 2rem;">
         <h1 style="font-family: var(--font-serif); font-size: 1.8rem; margin: 0 0 1rem 0;">Refine with Integration</h1>
@@ -23,7 +25,7 @@ function renderIntegrationChat() {
       </div>
 
       <!-- Chat History -->
-      <div id="chat-history" style="flex: 1; overflow-y: auto; padding: 1.5rem; background: var(--cream); border-radius: 6px; margin-bottom: 1.5rem; border: 1.5px solid var(--warm-gray); min-height: 300px;">
+      <div id="chat-history" style="padding: 1.5rem; background: var(--cream); border-radius: 6px; margin-bottom: 1.5rem; border: 1.5px solid var(--warm-gray);">
         <div id="messages"></div>
       </div>
 
@@ -33,7 +35,7 @@ function renderIntegrationChat() {
         <textarea 
           id="integration-final-idea"
           placeholder="Write your final integrated idea here..."
-          style="width: 100%; min-height: 100px; padding: 1rem; border: none; border-radius: 4px; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box; color: var(--ink);"
+          style="width: 100%; min-height: 100px; padding: 1rem; border: none; border-radius: 4px; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box; color: var(--ink); background: white;"
         >${integrationFinalIdea}</textarea>
       </div>
 
@@ -92,7 +94,7 @@ function renderMessages() {
 function setupInputSection() {
   const inputSection = document.getElementById('input-section');
   inputSection.innerHTML = `
-    <textarea id="user-response" placeholder="Type your message..." style="width: 100%; min-height: 80px; padding: 1rem; border: 1.5px solid var(--warm-gray); border-radius: 6px; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box;"></textarea>
+    <textarea id="user-response" placeholder="Type your message..." style="width: 100%; min-height: 80px; padding: 1rem; border: 1.5px solid var(--warm-gray); border-radius: 6px; font-family: var(--font-sans); font-size: 0.95rem; resize: vertical; box-sizing: border-box; background: white;"></textarea>
     <button class="btn btn-primary" onclick="submitChatMessage()" style="align-self: flex-end;">Send Message</button>
   `;
 }
@@ -134,15 +136,16 @@ ${otherIdeas.map((idea, i) => `${i + 1}. ${idea}`).join('\n')}
 
 Help the user explore how elements from other ideas can strengthen their refined concept. Be encouraging and ask clarifying questions about what elements they'd like to integrate.`;
 
-    const response = await fetch(`${API_URL}/chat`, {
+    const apiUrl = API_URL ? `${API_URL}/api/chat` : '/api/chat';
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemini-2.5-flash',
+        message: userMessage,
         system: systemPrompt,
-        messages: chatMessages.map(msg => ({
-          role: msg.role,
-          content: msg.content
+        conversationHistory: chatMessages.map(msg => ({
+          type: msg.role === 'user' ? 'user' : 'ai',
+          text: msg.content
         }))
       })
     });
@@ -152,6 +155,11 @@ Help the user explore how elements from other ideas can strengthen their refined
     }
 
     const data = await response.json();
+    
+    if (!data.success || !data.message) {
+      throw new Error(data.error || 'No message in response');
+    }
+    
     const aiMessage = data.message;
     
     chatMessages.push({

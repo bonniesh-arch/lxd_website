@@ -1,0 +1,10 @@
+.git
+.gitignore
+npm-debug.log
+.env
+.DS_Store
+*.md
+.agents/
+.augment/
+.claude/
+server.js

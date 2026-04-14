@@ -3,8 +3,8 @@
 
 :root {
   --ink: #0a0a0a;
-  --paper: #ffffff;
-  --cream: #faf8f5;
+  --paper: #EBE9E1;
+  --cream: #EBE9E1;
   --warm-gray: #e2dcd3;
   --mid-gray: #6b6b6b;
   --light-gray: #f0ebe5;
@@ -39,10 +39,12 @@ body {
 }
 
 .page { 
-  min-height: 100vh; 
-  display: flex; 
-  flex-direction: column; 
-  background: linear-gradient(135deg, var(--paper) 0%, var(--cream) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #EBE9E1;
 }
 
 .container { 
@@ -63,21 +65,21 @@ h1 {
   font-size: clamp(2.8rem, 8vw, 5.5rem);
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: var(--ink);
+  color: #E43D12;
 }
 
 h2 {
   font-family: var(--font-serif);
   font-size: clamp(2rem, 5vw, 3.2rem);
   font-weight: 900;
-  color: var(--ink);
+  color: #E43D12;
 }
 
 h3 {
   font-family: var(--font-sans);
   font-size: clamp(1.5rem, 3vw, 2.2rem);
   font-weight: 800;
-  color: var(--ink);
+  color: #E43D12;
 }
 
 p {
@@ -153,6 +155,7 @@ p {
 .landing-page { 
   justify-content: center; 
   align-items: center;
+  min-height: 100vh;
 }
 
 .landing-container { 
@@ -160,12 +163,16 @@ p {
   justify-content: center; 
   align-items: center;
   position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 100vh;
 }
 
 .landing-content { 
   text-align: center; 
   max-width: 650px; 
   width: 100%;
+  margin: 0 auto;
   animation: fadeInScale 0.8s var(--transition);
   position: relative;
   z-index: 1;
@@ -173,10 +180,7 @@ p {
 
 .landing-content h1 {
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-tertiary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #E43D12;
 }
 
 .landing-content p {
@@ -187,6 +191,7 @@ p {
   margin-right: auto;
   line-height: 1.8;
   color: var(--mid-gray);
+  text-align: center;
 }
 
 .landing-buttons {
@@ -195,7 +200,36 @@ p {
   gap: 2rem;
   justify-content: center;
   align-items: center;
+  text-align: center;
+}
+
+.btn-start {
+  padding: 1rem 2.5rem;
+  border-radius: 4px;
+  background: #E43D12;
+  color: white;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  box-shadow: 0 12px 40px rgba(228, 61, 18, 0.25);
+  animation: fadeUp 0.6s ease-out both;
+  animation-delay: 0.3s;
+  border: none;
+}
+
+.btn-start:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(228, 61, 18, 0.35);
+}
+
+.btn-start:active {
+  transform: translateY(0);
 }
 
 .btn-circle {
@@ -249,6 +283,35 @@ p {
   }
 }
 
+.btn-start {
+  padding: 1rem 2.5rem;
+  border-radius: 4px;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  box-shadow: 0 12px 40px rgba(212, 36, 38, 0.25);
+  animation: fadeUp 0.6s ease-out both;
+  animation-delay: 0.3s;
+  border: none;
+}
+
+.btn-start:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(212, 36, 38, 0.35);
+}
+
+.btn-start:active {
+  transform: translateY(0);
+}
+
 .btn-secondary {
   background: transparent;
   color: var(--ink);
@@ -261,6 +324,83 @@ p {
   background: var(--accent-primary);
   color: white;
   box-shadow: 0 8px 24px rgba(212, 36, 38, 0.2);
+}
+
+.btn-minimal {
+  background: transparent;
+  color: var(--ink);
+  border: none;
+  padding: 0.8rem 2rem;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.btn-minimal:hover {
+  background: transparent;
+  color: var(--accent-primary);
+  box-shadow: none;
+}
+
+/* Philosophy Page */
+.philosophy-page {
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.philosophy-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.philosophy-content {
+  text-align: center;
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  animation: fadeInScale 0.8s var(--transition);
+}
+
+.philosophy-text {
+  font-size: 1.1rem;
+  line-height: 1.9;
+  color: var(--ink);
+  margin: 0;
+  font-weight: 400;
+}
+
+.btn-philosophy-next {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #E43D12;
+  background: #E43D12;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  box-shadow: 0 12px 40px rgba(228, 61, 18, 0.25);
+  font-weight: 900;
+}
+
+.btn-philosophy-next:hover {
+  transform: scale(1.1) translateY(-4px);
+  box-shadow: 0 16px 48px rgba(228, 61, 18, 0.35);
+}
+
+.btn-philosophy-next:active {
+  transform: scale(0.95);
 }
 
 .idea-box {
@@ -348,6 +488,7 @@ p {
   flex: 1;
   font-weight: 500;
   line-height: 1.5;
+  font-size: 1.1rem;
 }
 
 /* Feedback Boxes */
@@ -499,36 +640,85 @@ p {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  padding: 1.5rem 0;
+  padding: 1.5rem 2rem;
 }
 
-.progress-dots {
+.progress-stepper {
   display: flex;
-  gap: 0.75rem;
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
+  width: 100%;
+  max-width: 600px;
 }
 
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--light-gray);
-  border: 2px solid var(--warm-gray);
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
   cursor: pointer;
+  z-index: 1;
+}
+
+.step-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: var(--font-sans);
   transition: all var(--transition-smooth);
+  border: 2.5px solid var(--warm-gray);
+  background: var(--paper);
+  color: var(--mid-gray);
 }
 
-.dot:hover {
-  transform: scale(1.2);
-  background: var(--accent-secondary);
-  border-color: var(--accent-secondary);
+.step-label {
+  position: absolute;
+  top: 52px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--mid-gray);
+  white-space: nowrap;
+  text-align: center;
+  opacity: 0;
+  transition: opacity var(--transition-smooth);
 }
 
-.dot.active {
+.step:hover .step-label {
+  opacity: 1;
+}
+
+.step.completed .step-circle {
   background: var(--accent-primary);
   border-color: var(--accent-primary);
-  box-shadow: 0 0 8px rgba(212, 36, 38, 0.4);
+  color: white;
+}
+
+.step.active .step-circle {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 0 0 4px rgba(212, 36, 38, 0.12);
+  background: var(--paper);
+}
+
+.step:hover .step-circle {
+  transform: scale(1.1);
+}
+
+.step-connector {
+  flex: 1;
+  height: 3px;
+  background: var(--warm-gray);
+  min-width: 24px;
+  transition: background var(--transition-smooth);
+}
+
+.step-connector.completed {
+  background: var(--accent-primary);
 }
 
 .stage-label {
@@ -599,7 +789,7 @@ p {
 }
 
 .challenge-guidance {
-  background: var(--cream);
+  background: white;
   padding: 1.5rem;
   border-left: 4px solid var(--accent-bright);
   border-radius: 4px;
@@ -628,7 +818,7 @@ p {
   grid-template-columns: 1fr auto;
   gap: 3rem;
   align-items: start;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   padding-bottom: 2rem;
   border-bottom: 2px solid var(--light-gray);
 }
@@ -678,9 +868,9 @@ p {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
-  margin: 2rem 0;
+  margin: -0.5rem 0 2rem 0;
   padding: 1.5rem;
-  background: var(--cream);
+  background: white;
   border-radius: 8px;
   border-left: 4px solid var(--accent-primary);
 }
@@ -736,7 +926,7 @@ p {
   min-height: 140px;
   resize: vertical;
   transition: all var(--transition-smooth);
-  background: var(--paper);
+  background: white;
   color: var(--ink);
 }
 
@@ -824,7 +1014,7 @@ p {
   align-items: flex-start;
   gap: 1rem;
   padding: 1.5rem;
-  border: 2px solid var(--light-gray);
+  border: 2px solid var(--warm-gray);
   border-radius: 8px;
   cursor: pointer;
   transition: all var(--transition-smooth);
@@ -891,7 +1081,7 @@ p {
   font-size: 0.95rem;
   min-height: 120px;
   resize: vertical;
-  background: var(--paper);
+  background: white;
   color: var(--ink);
   transition: all var(--transition-smooth);
 }
@@ -903,10 +1093,14 @@ p {
 }
 
 .justification-section {
-  margin-top: 2rem;
-  padding-top: 2rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
   border-top: 2px solid var(--light-gray);
   animation: slideUp 0.45s ease-out;
+}
+
+.justification-section h2 {
+  margin-bottom: 1.5rem;
 }
 
 .slide-up {
@@ -985,13 +1179,15 @@ p {
   color: white;
   margin-left: 2rem;
   text-align: right;
+  border: 2px solid var(--accent-primary);
+  border-radius: 8px;
 }
 
 .ai-message {
   background: white;
   color: var(--ink);
   margin-right: 2rem;
-  border: 1px solid var(--light-gray);
+  border: 2px solid var(--ink);
 }
 
 .message-header {
@@ -1141,8 +1337,8 @@ p {
   flex-direction: column;
   min-height: 600px;
   background: var(--cream);
-  border-radius: 8px;
-  border: 1px solid var(--light-gray);
+  border-radius: 12px;
+  border: 2px solid var(--warm-gray);
   overflow: hidden;
 }
 
@@ -1176,6 +1372,7 @@ p {
   font-family: var(--font-sans);
   font-size: 0.95rem;
   resize: vertical;
+  background: white;
   transition: border-color var(--transition-smooth);
   box-sizing: border-box;
 }
@@ -1521,8 +1718,8 @@ p {
 
 .comparison-box {
   padding: 1rem;
-  border-radius: 6px;
-  border: 2px solid var(--light-gray);
+  border-radius: 12px;
+  border: 2px solid var(--warm-gray);
   background: var(--cream);
   line-height: 1.7;
   color: var(--ink);
@@ -1832,5 +2029,24 @@ p {
 
   .report-footer {
     flex-direction: column;
+  }
+}
+
+/* ========== DISCOVER QUIZ MODAL & STYLING ========== */
+
+.quiz-option.selected {
+  background: rgba(212, 36, 38, 0.1);
+  border-color: var(--accent-primary);
+  box-shadow: 0 8px 24px rgba(212, 36, 38, 0.15);
+}
+
+#main-content {
+  /* Content expands naturally - browser handles scrolling */
+}
+
+/* Ensure normal scrollable layout */
+@media (min-height: 800px) {
+  #main-content {
+    /* No height constraints */
   }
 }

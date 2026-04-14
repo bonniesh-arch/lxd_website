@@ -1,10 +1,51 @@
 // Activity State Management
 console.log('✅ activity.js loaded');
 
+// Stage labels for the progress stepper
+const STAGE_LABELS = {
+  1: 'Challenge',
+  2: 'Ideate',
+  3: 'Select',
+  4: 'AI Collab',
+  5: 'Revise',
+  6: 'Reflect',
+  8: 'Report'
+};
+
+// Build progress stepper HTML
+function buildProgressStepper(currentStage) {
+  const stages = [1, 2, 3, 4, 5, 6, 8];
+  const currentIdx = stages.indexOf(currentStage);
+  const checkSVG = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10.5L8.5 14L15 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  let html = '<div class="progress-stepper">';
+  stages.forEach((stage, i) => {
+    const isCompleted = i < currentIdx;
+    const isActive = stage === currentStage;
+    const cls = isCompleted ? 'completed' : isActive ? 'active' : '';
+    const canClick = i < currentIdx;
+    const onclick = canClick ? ` onclick="ActivityState.goToStage(${stage})"` : '';
+    const content = isCompleted ? checkSVG : (i + 1);
+
+    html += `<div class="step ${cls}"${onclick}>
+      <div class="step-circle">${content}</div>
+      <span class="step-label">${STAGE_LABELS[stage]}</span>
+    </div>`;
+    if (i < stages.length - 1) {
+      html += `<div class="step-connector${isCompleted ? ' completed' : ''}"></div>`;
+    }
+  });
+  html += '</div>';
+
+  const stageNum = currentIdx + 1;
+  html = `<div class="stage-progress">${html}<div class="stage-label">Stage ${stageNum} of 7: ${STAGE_LABELS[currentStage]}</div></div>`;
+  return html;
+}
+
 // State Management for 8-Stage Guided Activity Flow
 const ActivityState = {
   currentStage: 1,
-  designChallenge: "Reimagine how people interact with everyday digital notifications.", // Always have a default
+  designChallenge: null, // Will be set during initialize
   ideas: [], // Array of 8 ideas
   selectedIdeaIndex: null,
   selectedIdeaJustification: {
@@ -26,47 +67,35 @@ const ActivityState = {
   
   async initialize() {
     console.log('⚙️ initialize() called');
-    // Set a fallback challenge immediately
-    if (!this.designChallenge) {
-      this.designChallenge = "Reimagine how people interact with everyday digital notifications.";
-    }
-    // Try to fetch a new one but don't block rendering
-    try {
-      await this.getDesignChallenge();
-    } catch (error) {
-      console.error('Challenge fetch error:', error);
-    }
+    // Get a random challenge from the list
+    this.getDesignChallenge();
+    console.log('✅ Challenge set:', this.designChallenge);
   },
 
-  async getDesignChallenge() {
+  getDesignChallenge() {
     console.log('🔄 getDesignChallenge() called');
-    // Generate a design challenge using the backend
-    try {
-      const response = await fetch('http://localhost:3001/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: `Generate a single, specific, slightly ambiguous real-world design challenge suitable for a creative ideation exercise. 
-                    Format: Just provide the challenge prompt in 2-3 sentences. Make it open-ended but concrete.
-                    Example: "Design a way for strangers in a waiting room to feel more connected. What would that look like?"`,
-          conversationHistory: []
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API responded with ${response.status}`);
-      }
-      
-      const data = await response.json();
-      if (data.message) {
-        console.log('📥 Got new challenge from API');
-        this.designChallenge = data.message;
-      }
-      return this.designChallenge;
-    } catch (error) {
-      console.error('Error fetching challenge:', error);
-      return this.designChallenge;
-    }
+    
+    // Predefined list of design challenges
+    const challenges = [
+      'Design a tool to help users stay connected with friends or family regularly.',
+      'Design a tool to help users reduce clutter without throwing things away.',
+      'Design a tool to help users remember what they need before leaving home.',
+      'Design a tool to help people keep their space organized effortlessly.',
+      'Design a tool to help users stay motivated during long tasks.',
+      'Design a tool to help people calm down when they feel stressed.',
+      'Design a tool to help users build a daily habit.',
+      'Design a tool to help people break a bad habit.',
+      'Design a tool to help people remember to do small but important tasks.',
+      'Design a desk tool to help people stay focused while working.',
+      'Design a tool to help users start tasks when they feel unmotivated.'
+    ];
+    
+    // Pick a random challenge from the list
+    const randomIndex = Math.floor(Math.random() * challenges.length);
+    this.designChallenge = challenges[randomIndex];
+    
+    console.log('📥 Got random challenge:', this.designChallenge);
+    return this.designChallenge;
   },
 
   goToStage(stageNum) {
@@ -169,18 +198,7 @@ const StageDesignChallenge = {
     
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot active" data-stage="1"></div>
-            <div class="dot" data-stage="2"></div>
-            <div class="dot" data-stage="3"></div>
-            <div class="dot" data-stage="4"></div>
-            <div class="dot" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 1 of 7: Design Challenge</div>
-        </div>
+        ${buildProgressStepper(1)}
 
         <div class="stage-content">
           <div class="challenge-card">
@@ -242,18 +260,7 @@ const StageDivergentThinking = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot active" data-stage="2"></div>
-            <div class="dot" data-stage="3"></div>
-            <div class="dot" data-stage="4"></div>
-            <div class="dot" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 2 of 7: Divergent Thinking</div>
-        </div>
+        ${buildProgressStepper(2)}
 
         <div class="stage-content">
           <div class="divergent-card">
@@ -359,18 +366,7 @@ const StageIdeaSelection = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot active" data-stage="3"></div>
-            <div class="dot" data-stage="4"></div>
-            <div class="dot" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 3 of 7: Idea Selection & Justification</div>
-        </div>
+        ${buildProgressStepper(3)}
 
         <div class="stage-content">
           <div class="selection-card">
@@ -491,22 +487,11 @@ const StageAICollaboration = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot active" data-stage="4"></div>
-            <div class="dot" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 4 of 7: AI Collaboration</div>
-        </div>
+        ${buildProgressStepper(4)}
 
         <div class="stage-content">
           <div class="ai-chat-interface">
-            <div class="stage-title" style="margin-bottom: 0.5rem; font-size: 1.3rem;">Refine Your Idea with AI</div>
+            <h1 class="stage-title">Refine Your Idea with AI</h1>
             
             <div class="chat-wrapper">
               <div class="messages-list">
@@ -596,6 +581,15 @@ const StageAICollaboration = {
     }
   },
 
+  toggleSuggestionsMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const menu = document.getElementById('suggestions-menu');
+    if (menu) {
+      menu.classList.toggle('hidden');
+    }
+  },
+
   closeSuggestionsMenu() {
     const menu = document.getElementById('suggestions-menu');
     if (menu) {
@@ -621,7 +615,12 @@ const StageAICollaboration = {
     try {
       const systemPrompt = getAICollaboratorSystemPrompt(designChallenge, selectedIdea, allIdeas);
       
-      const response = await fetch('http://localhost:3001/api/chat', {
+      // Use relative path for Vercel, or localhost for local development
+      const apiUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3001/api/chat'
+        : '/api/chat';
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -635,11 +634,32 @@ const StageAICollaboration = {
       });
 
       const data = await response.json();
-      ActivityState.addAIMessage('ai', data.message);
+      console.log('API Response:', data);
+      
+      if (!response.ok) {
+        throw new Error(data.error || `API error: ${response.status}`);
+      }
+      
+      // Handle error responses from the server
+      if (data.success === false && data.error) {
+        throw new Error(data.error);
+      }
+      
+      if (data.success && data.message) {
+        ActivityState.addAIMessage('ai', data.message);
+      } else if (data.message) {
+        ActivityState.addAIMessage('ai', data.message);
+      } else {
+        throw new Error('No message in API response');
+      }
+      
       StageAICollaboration.render();
     } catch (error) {
       console.error('Error getting AI response:', error);
-      ActivityState.addAIMessage('ai', 'Sorry, I encountered an error. Please try again.');
+      const errorMessage = error.message.includes('high demand') 
+        ? 'The AI service is currently overloaded. Please try again in a moment.'
+        : error.message || 'Sorry, I encountered an error. Please try again.';
+      ActivityState.addAIMessage('ai', errorMessage);
       StageAICollaboration.render();
     }
   }
@@ -659,18 +679,7 @@ const StageHumanRevision = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot" data-stage="4" onclick="ActivityState.goToStage(4)"></div>
-            <div class="dot active" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 5 of 7: Human Revision</div>
-        </div>
+        ${buildProgressStepper(5)}
 
         <div class="stage-content">
           <div class="revision-card">
@@ -728,18 +737,7 @@ const StageAIReflection = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot" data-stage="4" onclick="ActivityState.goToStage(4)"></div>
-            <div class="dot" data-stage="5" onclick="ActivityState.goToStage(5)"></div>
-            <div class="dot active" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 6 of 7: AI Usage Reflection</div>
-        </div>
+        ${buildProgressStepper(6)}
 
         <div class="stage-content">
           <div class="reflection-card">
@@ -822,19 +820,7 @@ const StageAIDecisionMaking = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot" data-stage="4" onclick="ActivityState.goToStage(4)"></div>
-            <div class="dot" data-stage="5" onclick="ActivityState.goToStage(5)"></div>
-            <div class="dot" data-stage="6" onclick="ActivityState.goToStage(6)"></div>
-            <div class="dot active" data-stage="7"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 7 of 8: AI Decision-Making Layer</div>
-        </div>
+        ${buildProgressStepper(8)}
 
         <div class="stage-content">
           <div class="decision-card">
@@ -866,6 +852,15 @@ const StageFinalReport = {
     const messagesCount = ActivityState.aiConversation.totalMessages;
     const promptTypes = Array.from(ActivityState.aiConversation.promptTypes);
 
+    // Get the justification responses
+    const whyChosen = ActivityState.selectedIdeaJustification.why;
+    const challenges = ActivityState.selectedIdeaJustification.challenges;
+
+    // Get the reflection responses
+    const whatHelped = ActivityState.aiReflection.whatHelped;
+    const whatDidntWork = ActivityState.aiReflection.whatDidntWork;
+    const acceptedSuggestions = ActivityState.aiReflection.acceptedSuggestions;
+
     const insights = [
       "How did AI change your thinking process?",
       "When would you choose NOT to use AI in the future?",
@@ -876,18 +871,7 @@ const StageFinalReport = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot" data-stage="4" onclick="ActivityState.goToStage(4)"></div>
-            <div class="dot" data-stage="5" onclick="ActivityState.goToStage(5)"></div>
-            <div class="dot" data-stage="6" onclick="ActivityState.goToStage(6)"></div>
-            <div class="dot active" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 7 of 7: Your Report Card</div>
-        </div>
+        ${buildProgressStepper(8)}
 
         <div class="stage-content">
           <div class="report-card">
@@ -909,6 +893,51 @@ const StageFinalReport = {
                     <div class="evolution-label">Final Idea</div>
                     <div class="evolution-content">${revisedIdea}</div>
                   </div>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">🤔 Why You Chose This Idea</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p><strong>Your reasoning:</strong></p>
+                  <p style="line-height: 1.6;">${whyChosen}</p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">⚠️ Challenges You Identified</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p><strong>Uncertainties & concerns:</strong></p>
+                  <p style="line-height: 1.6;">${challenges}</p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">💬 AI Collaboration Exchange</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p><strong>Messages exchanged:</strong> <span style="font-weight: 800; color: var(--accent-primary);">${messagesCount} message${messagesCount !== 1 ? 's' : ''}</span></p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">✨ How AI Helped You</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p style="line-height: 1.6;">${whatHelped}</p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">🎯 Where AI Fell Short</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p style="line-height: 1.6;">${whatDidntWork}</p>
+                </div>
+              </section>
+
+              <section class="report-section">
+                <h2 class="report-section-title">🔄 Your AI Decisions</h2>
+                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
+                  <p><strong>Suggestions you accepted vs. rejected:</strong></p>
+                  <p style="line-height: 1.6;">${acceptedSuggestions}</p>
                 </div>
               </section>
 
