@@ -1,6 +1,47 @@
 // Activity State Management
 console.log('✅ activity.js loaded');
 
+// Stage labels for the progress stepper
+const STAGE_LABELS = {
+  1: 'Challenge',
+  2: 'Ideate',
+  3: 'Select',
+  4: 'AI Collab',
+  5: 'Revise',
+  6: 'Reflect',
+  8: 'Report'
+};
+
+// Build progress stepper HTML
+function buildProgressStepper(currentStage) {
+  const stages = [1, 2, 3, 4, 5, 6, 8];
+  const currentIdx = stages.indexOf(currentStage);
+  const checkSVG = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10.5L8.5 14L15 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  let html = '<div class="progress-stepper">';
+  stages.forEach((stage, i) => {
+    const isCompleted = i < currentIdx;
+    const isActive = stage === currentStage;
+    const cls = isCompleted ? 'completed' : isActive ? 'active' : '';
+    const canClick = i < currentIdx;
+    const onclick = canClick ? ` onclick="ActivityState.goToStage(${stage})"` : '';
+    const content = isCompleted ? checkSVG : (i + 1);
+
+    html += `<div class="step ${cls}"${onclick}>
+      <div class="step-circle">${content}</div>
+      <span class="step-label">${STAGE_LABELS[stage]}</span>
+    </div>`;
+    if (i < stages.length - 1) {
+      html += `<div class="step-connector${isCompleted ? ' completed' : ''}"></div>`;
+    }
+  });
+  html += '</div>';
+
+  const stageNum = currentIdx + 1;
+  html = `<div class="stage-progress">${html}<div class="stage-label">Stage ${stageNum} of 7: ${STAGE_LABELS[currentStage]}</div></div>`;
+  return html;
+}
+
 // State Management for 8-Stage Guided Activity Flow
 const ActivityState = {
   currentStage: 1,
@@ -157,18 +198,7 @@ const StageDesignChallenge = {
     
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot active" data-stage="1"></div>
-            <div class="dot" data-stage="2"></div>
-            <div class="dot" data-stage="3"></div>
-            <div class="dot" data-stage="4"></div>
-            <div class="dot" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 1 of 7: Design Challenge</div>
-        </div>
+        ${buildProgressStepper(1)}
 
         <div class="stage-content">
           <div class="challenge-card">
@@ -230,18 +260,7 @@ const StageDivergentThinking = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot active" data-stage="2"></div>
-            <div class="dot" data-stage="3"></div>
-            <div class="dot" data-stage="4"></div>
-            <div class="dot" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 2 of 7: Divergent Thinking</div>
-        </div>
+        ${buildProgressStepper(2)}
 
         <div class="stage-content">
           <div class="divergent-card">
@@ -347,18 +366,7 @@ const StageIdeaSelection = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot active" data-stage="3"></div>
-            <div class="dot" data-stage="4"></div>
-            <div class="dot" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 3 of 7: Idea Selection & Justification</div>
-        </div>
+        ${buildProgressStepper(3)}
 
         <div class="stage-content">
           <div class="selection-card">
@@ -479,18 +487,7 @@ const StageAICollaboration = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot active" data-stage="4"></div>
-            <div class="dot" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 4 of 7: AI Collaboration</div>
-        </div>
+        ${buildProgressStepper(4)}
 
         <div class="stage-content">
           <div class="ai-chat-interface">
@@ -682,18 +679,7 @@ const StageHumanRevision = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot" data-stage="4" onclick="ActivityState.goToStage(4)"></div>
-            <div class="dot active" data-stage="5"></div>
-            <div class="dot" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 5 of 7: Human Revision</div>
-        </div>
+        ${buildProgressStepper(5)}
 
         <div class="stage-content">
           <div class="revision-card">
@@ -751,18 +737,7 @@ const StageAIReflection = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot" data-stage="4" onclick="ActivityState.goToStage(4)"></div>
-            <div class="dot" data-stage="5" onclick="ActivityState.goToStage(5)"></div>
-            <div class="dot active" data-stage="6"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 6 of 7: AI Usage Reflection</div>
-        </div>
+        ${buildProgressStepper(6)}
 
         <div class="stage-content">
           <div class="reflection-card">
@@ -845,19 +820,7 @@ const StageAIDecisionMaking = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot" data-stage="4" onclick="ActivityState.goToStage(4)"></div>
-            <div class="dot" data-stage="5" onclick="ActivityState.goToStage(5)"></div>
-            <div class="dot" data-stage="6" onclick="ActivityState.goToStage(6)"></div>
-            <div class="dot active" data-stage="7"></div>
-            <div class="dot" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 7 of 8: AI Decision-Making Layer</div>
-        </div>
+        ${buildProgressStepper(8)}
 
         <div class="stage-content">
           <div class="decision-card">
@@ -908,18 +871,7 @@ const StageFinalReport = {
 
     content.innerHTML = `
       <div class="stage-container fade-in">
-        <div class="stage-progress">
-          <div class="progress-dots">
-            <div class="dot" data-stage="1" onclick="ActivityState.goToStage(1)"></div>
-            <div class="dot" data-stage="2" onclick="ActivityState.goToStage(2)"></div>
-            <div class="dot" data-stage="3" onclick="ActivityState.goToStage(3)"></div>
-            <div class="dot" data-stage="4" onclick="ActivityState.goToStage(4)"></div>
-            <div class="dot" data-stage="5" onclick="ActivityState.goToStage(5)"></div>
-            <div class="dot" data-stage="6" onclick="ActivityState.goToStage(6)"></div>
-            <div class="dot active" data-stage="8"></div>
-          </div>
-          <div class="stage-label">Stage 7 of 7: Your Report Card</div>
-        </div>
+        ${buildProgressStepper(8)}
 
         <div class="stage-content">
           <div class="report-card">
