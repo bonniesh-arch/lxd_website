@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
         response = await axios.post(
-          `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`,
           requestBody,
           {
             headers: {
