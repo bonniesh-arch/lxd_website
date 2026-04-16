@@ -125,9 +125,7 @@ Remember: Your goal is to make the user a better thinker about their idea, not t
 // Focused opening message to begin the collaboration
 // Receives: designChallenge, selectedIdea
 function getAICollaboratorFirstMessage(designChallenge, selectedIdea) {
-  return `Hi, I'm here to help you refine your idea step by step.
-
-To begin, what part of this idea feels most important to develop further?`;
+  return `Hi, I'm here to support you on your creative journey. To start, I can help you research existing ideas similar to or different from yours. What would you like to know?`;
 }
 
 // ===== REFINEMENT RULES =====

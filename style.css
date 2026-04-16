@@ -368,6 +368,14 @@ p {
   animation: fadeInScale 0.8s var(--transition);
 }
 
+.philosophy-subtitle {
+  font-family: var(--font-sans);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 900;
+  color: #E43D12;
+  margin: 0;
+}
+
 .philosophy-text {
   font-size: 1.1rem;
   line-height: 1.9;
@@ -772,8 +780,47 @@ p {
 .stage-subtitle {
   font-size: 1rem;
   color: var(--mid-gray);
-  margin-bottom: 2rem;
+  margin-bottom: 0.25rem;
   line-height: 1.6;
+}
+
+/* Feeling Stuck tooltip */
+.stuck-tooltip-wrapper {
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+}
+
+.stuck-trigger {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #E43D12;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  background: white;
+  border: 1.5px solid #E43D12;
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  display: inline-block;
+}
+
+.stuck-tooltip {
+  display: none;
+  position: absolute;
+  top: 1.8rem;
+  right: 0;
+  background: white;
+  border: 1.5px solid #E43D12;
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  min-width: 220px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 100;
+}
+
+.stuck-tooltip-wrapper:hover .stuck-tooltip {
+  display: block;
 }
 
 /* Stage 1: Design Challenge */
@@ -1430,7 +1477,8 @@ p {
   box-shadow: var(--shadow-lg);
   max-width: 400px;
   z-index: 1000;
-  overflow: hidden;
+  max-height: calc(4 * 3.2rem);
+  overflow-y: auto;
   transition: opacity var(--transition-smooth);
 }
 
@@ -1741,7 +1789,7 @@ p {
   text-align: center;
   padding: 2rem 0;
   border-bottom: 2px solid var(--light-gray);
-  margin-bottom: 3rem;
+  margin-bottom: 1.2rem;
 }
 
 .report-sections {

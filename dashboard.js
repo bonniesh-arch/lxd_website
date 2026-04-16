@@ -21,9 +21,9 @@ function renderDashboard() {
               <div class="progress-card">
                 <h3 style="font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 1rem;">Crazy 8</h3>
 
-                <p style="color: var(--mid-gray); font-size: 0.9rem; margin-bottom: 1rem;">Generate 8 ideas in 8 minuted and iterate with AI</p>
+                <p style="color: var(--mid-gray); font-size: 0.9rem; margin-bottom: 1rem;">Generate 8 ideas and refine with AI</p>
 
-                <button class="btn btn-primary" onclick="location.href='activity.html'" style="width: 100%;">
+                <button class="btn btn-primary" onclick="location.href='mission.html'" style="width: 100%;">
                   Start
                 </button>
               </div>

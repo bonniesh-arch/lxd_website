@@ -46,6 +46,7 @@ function buildProgressStepper(currentStage) {
 const ActivityState = {
   currentStage: 1,
   designChallenge: null, // Will be set during initialize
+  designChallengeHints: [], // Hints for the current challenge
   ideas: [], // Array of 8 ideas
   selectedIdeaIndex: null,
   selectedIdeaJustification: {
@@ -75,24 +76,111 @@ const ActivityState = {
   getDesignChallenge() {
     console.log('🔄 getDesignChallenge() called');
     
-    // Predefined list of design challenges
+    // Predefined list of design challenges with their own hints
     const challenges = [
-      'Design a tool to help users stay connected with friends or family regularly.',
-      'Design a tool to help users reduce clutter without throwing things away.',
-      'Design a tool to help users remember what they need before leaving home.',
-      'Design a tool to help people keep their space organized effortlessly.',
-      'Design a tool to help users stay motivated during long tasks.',
-      'Design a tool to help people calm down when they feel stressed.',
-      'Design a tool to help users build a daily habit.',
-      'Design a tool to help people break a bad habit.',
-      'Design a tool to help people remember to do small but important tasks.',
-      'Design a desk tool to help people stay focused while working.',
-      'Design a tool to help users start tasks when they feel unmotivated.'
+      {
+        text: 'Think of a tool to help users stay connected with friends or family regularly.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'What does it mean to stay connected?',
+          'How regularly do you envision connecting with friends and family?',
+          'Would the tool be collaborative or individual?'
+        ]
+      },
+      {
+        text: 'Think of a tool to help users reduce clutter without throwing things away.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'What would you consider to be clutter?',
+          'What does reduce mean to you?'
+        ]
+      },
+      {
+        text: 'Think of a tool to help users remember what they need before leaving home.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'What do you need before you leave the house?',
+          'Why would a reminder before you leave the house be useful?',
+          'Where would this reminder be most useful?',
+          'Would the tool be collaborative or individual?'
+        ]
+      },
+      {
+        text: 'Think of a tool to help people keep their drawer space organized.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'Where is this drawer and what would be in it?',
+          'Why do these items need to be in the drawer?',
+          'What is a fun way these items could be accessed?'
+        ]
+      },
+      {
+        text: 'Think of a tool to help users stay motivated during long tasks.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'What is your threshold to consider a task long?',
+          'What impedes a long task?',
+          'Why is it important to stay motivated during this task?'
+        ]
+      },
+      {
+        text: 'Think of a tool to help people calm down when they feel stressed.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'What makes you stressed and how do you address those feelings?',
+          'What does calm look like to you?',
+          'Would the tool be collaborative or individual?'
+        ]
+      },
+      {
+        text: 'Think of a tool to help users build a daily morning walk habit.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'What are the benefits of a daily walk and how can the tool leverage those benefits?',
+          'Would the habit accountability be collaborative or individual?'
+        ]
+      },
+      {
+        text: 'Think of a tool to help people break a nail biting habit.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'Why do people bite their nails?',
+          'Why would people need to address this habit?',
+          'What are the consequences of not addressing this habit?'
+        ]
+      },
+      {
+        text: 'Think of a tool to help people remember to water their plants.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'How often does this person need to water their plants?',
+          'Would this tool be separate from the watering device?',
+          'Why do people forget to water their plants?'
+        ]
+      },
+      {
+        text: 'Think of a desk tool to help people stay focused while working.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'What distracts people while they are working?',
+          'What does focus look like to you?'
+        ]
+      },
+      {
+        text: 'Think of a tool to help users do house chores when they feel unmotivated.',
+        hints: [
+          'What does a "tool" mean in this context? How does it support the goal?',
+          'Why do people feel unmotivated to start tasks?',
+          'What helps you overcome the initial hurdle of beginning a chore?',
+          'What are the chores you struggle to start the most? Why?'
+        ]
+      }
     ];
     
     // Pick a random challenge from the list
     const randomIndex = Math.floor(Math.random() * challenges.length);
-    this.designChallenge = challenges[randomIndex];
+    this.designChallenge = challenges[randomIndex].text;
+    this.designChallengeHints = challenges[randomIndex].hints;
     
     console.log('📥 Got random challenge:', this.designChallenge);
     return this.designChallenge;
@@ -101,6 +189,7 @@ const ActivityState = {
   goToStage(stageNum) {
     this.currentStage = stageNum;
     this.render();
+    window.scrollTo({ top: 0, behavior: 'instant' });
   },
 
   addIdea(index, text) {
@@ -204,19 +293,10 @@ const StageDesignChallenge = {
           <div class="challenge-card">
             <h1 class="stage-title">Your Design Challenge</h1>
             <p class="stage-subtitle">This is your starting point. Spend a moment understanding the problem, then generate your ideas.</p>
-            
-            <div class="challenge-prompt">
-              ${challenge}
-            </div>
 
-            <div class="challenge-guidance">
-              <h3>💭 How to think about this:</h3>
-              <ul>
-                <li>The challenge is intentionally open-ended</li>
-                <li>There's no single "right" answer</li>
-                <li>Consider different perspectives and contexts</li>
-                <li>Let your mind explore possibilities freely</li>
-              </ul>
+            <div style="border: 1.5px solid #E43D12; border-radius: var(--radius); background: var(--light-gray); padding: 1.5rem 2rem; margin: 1.5rem 0;">
+              <p style="font-size: 0.8rem; font-weight: 700; color: #E43D12; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 0.4rem 0;">Your Challenge</p>
+              <p style="font-size: 1.15rem; font-weight: 700; color: var(--ink); margin: 0;">${challenge}</p>
             </div>
 
             <div style="text-align: center; margin-top: 2rem;">
@@ -271,10 +351,17 @@ const StageDivergentThinking = {
               </div>
             </div>
 
-            <div class="challenge-context">
-              <div class="challenge-context-item">
-                <span class="challenge-context-label">🎯 Your Design Challenge:</span>
-                <span class="challenge-context-value">${ActivityState.designChallenge}</span>
+            <div style="position: relative; border: 1.5px solid #E43D12; border-radius: var(--radius); background: var(--light-gray); padding: 1.5rem 2rem; margin: 0.2rem 0 2rem 0;">
+              <p style="font-size: 0.8rem; font-weight: 700; color: #E43D12; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 0.4rem 0;">Your Challenge</p>
+              <p style="font-size: 1.15rem; font-weight: 700; color: var(--ink); margin: 0;">${ActivityState.designChallenge}</p>
+              <div class="stuck-tooltip-wrapper">
+                <span class="stuck-trigger">💡 Feeling Stuck?</span>
+                <div class="stuck-tooltip">
+                  <p style="font-size: 0.8rem; font-weight: 700; color: #E43D12; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 0.6rem 0;">Have you thought about:</p>
+                  <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.7; color: var(--ink);">
+                    ${ActivityState.designChallengeHints.map(h => `<li>${h}</li>`).join('')}
+                  </ul>
+                </div>
               </div>
             </div>
 
@@ -288,7 +375,7 @@ const StageDivergentThinking = {
                 onclick="ActivityState.goToStage(3)"
                 ${ideasCount < 8 ? 'disabled' : ''}
               >
-                Select Best Idea →
+                Next →
               </button>
               <p class="hint-text">${ideasCount < 8 ? `Complete all 8 ideas to continue` : '✓ Ready to continue'}</p>
             </div>
@@ -392,7 +479,7 @@ const StageIdeaSelection = {
                 </div>
 
                 <div class="form-group">
-                  <label>What uncertainties or challenges do you see in it?</label>
+                  <label>What would you need to consider to develop this idea?</label>
                   <textarea 
                     id="challenges-textarea"
                     placeholder="What questions or concerns do you have?..."
@@ -515,6 +602,12 @@ const StageAICollaboration = {
                       </button>
                       
                       <div id="suggestions-menu" class="suggestions-menu hidden">
+                        <div class="suggestion-option" onclick="StageAICollaboration.setSuggestion('To what extent does my idea address the challenge?')">
+                          To what extent does my idea address the challenge?
+                        </div>
+                        <div class="suggestion-option" onclick="StageAICollaboration.setSuggestion('What does my idea assume about the challenge?')">
+                          What does my idea assume about the challenge?
+                        </div>
                         <div class="suggestion-option" onclick="StageAICollaboration.setSuggestion('What are the main weaknesses or risks in this idea?')">
                           What are the main weaknesses or risks in this idea?
                         </div>
@@ -689,8 +782,8 @@ const StageHumanRevision = {
             <div class="revision-comparison">
               <div class="comparison-column">
                 <h3>Your Original Idea</h3>
-                <div class="comparison-box original">
-                  ${selectedIdea}
+                <div style="border: 1.5px solid #E43D12; border-radius: var(--radius); background: var(--light-gray); padding: 1.5rem 2rem;">
+                  <p style="font-size: 1rem; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.6;">${selectedIdea}</p>
                 </div>
               </div>
               <div class="comparison-column">
@@ -711,7 +804,7 @@ const StageHumanRevision = {
                 onclick="ActivityState.goToStage(6)"
                 ${!ActivityState.revisedIdea || !ActivityState.revisedIdea.trim() ? 'disabled' : ''}
               >
-                Reflect on AI Usage →
+                  Reflect on Your Creative Process →
               </button>
             </div>
           </div>
@@ -741,36 +834,35 @@ const StageAIReflection = {
 
         <div class="stage-content">
           <div class="reflection-card">
-            <h1 class="stage-title">Reflect on Your AI Collaboration</h1>
-            <p class="stage-subtitle">How did AI help you? What could it do better? What did you actually use?</p>
+            <h1 class="stage-title">Reflect on Your Creative Process</h1>
 
             <div class="reflection-form">
               <div class="form-group">
-                <label>What did AI help you do?</label>
+                <label>How did AI support or hinder your creative thinking?</label>
                 <textarea 
                   id="reflection-helped"
                   class="form-textarea"
-                  placeholder="e.g., Helped me see potential flaws, Expanded my thinking..."
+                  placeholder="Describe how AI influenced your creative process..."
                   oninput="ActivityState.aiReflection.whatHelped = this.value; StageAIReflection.updateButtonState();"
                 >${ActivityState.aiReflection.whatHelped}</textarea>
               </div>
 
               <div class="form-group">
-                <label>What did AI NOT do well?</label>
+                <label>What strategies did you learn that could aid your creativity in the future?</label>
                 <textarea 
                   id="reflection-notwell"
                   class="form-textarea"
-                  placeholder="e.g., Suggestions were too generic, Didn't understand my context..."
+                  placeholder="What approaches or techniques will you take forward?"
                   oninput="ActivityState.aiReflection.whatDidntWork = this.value; StageAIReflection.updateButtonState();"
                 >${ActivityState.aiReflection.whatDidntWork}</textarea>
               </div>
 
               <div class="form-group">
-                <label>Which AI suggestions did you accept vs. reject? Why?</label>
+                <label>What feedback guided decisions you made through this activity?</label>
                 <textarea 
                   id="reflection-accepted"
                   class="form-textarea"
-                  placeholder="e.g., I kept X because... I rejected Y because..."
+                  placeholder="Which inputs — from AI or yourself — shaped your choices?"
                   oninput="ActivityState.aiReflection.acceptedSuggestions = this.value; StageAIReflection.updateButtonState();"
                 >${ActivityState.aiReflection.acceptedSuggestions}</textarea>
               </div>
@@ -861,6 +953,24 @@ const StageFinalReport = {
     const whatDidntWork = ActivityState.aiReflection.whatDidntWork;
     const acceptedSuggestions = ActivityState.aiReflection.acceptedSuggestions;
 
+    // Get Agent Report quiz answers from localStorage
+    let agentReportAnswers = [];
+    try {
+      agentReportAnswers = JSON.parse(localStorage.getItem('agentReportAnswers') || '[]');
+    } catch(e) {}
+
+    const agentReportHTML = agentReportAnswers.length ? `
+      <section>
+        <h2 style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 700; color: #E43D12; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 0.5rem 0;">🔍 Agent Research</h2>
+        ${agentReportAnswers.map(function(qa, i) {
+          return '<div style="border: 1.5px solid var(--light-gray); border-radius: var(--radius); background: white; padding: 1rem 1.2rem; margin-bottom: 0.5rem;">'
+            + '<p style="font-size: 0.9rem; font-weight: 600; color: var(--mid-gray); margin: 0 0 0.3rem 0;">Q' + (i+1) + ': ' + qa.question + '</p>'
+            + '<p style="font-size: 1rem; color: var(--ink); margin: 0; line-height: 1.6;">' + qa.answer + '</p>'
+            + '</div>';
+        }).join('')}
+      </section>
+    ` : '';
+
     const insights = [
       "How did AI change your thinking process?",
       "When would you choose NOT to use AI in the future?",
@@ -880,64 +990,39 @@ const StageFinalReport = {
               <p class="stage-subtitle">A summary of your process, insights, and growth</p>
             </div>
 
-            <div class="report-sections">
-              <section class="report-section idea-evolution">
-                <h2 class="report-section-title">💡 Your Idea Evolution</h2>
-                <div class="evolution-comparison">
-                  <div class="evolution-item">
-                    <div class="evolution-label">Initial Idea</div>
-                    <div class="evolution-content">${originalIdea}</div>
+            <div class="report-sections" style="display: flex; flex-direction: column; gap: 1.2rem;">
+
+              <section>
+                <h2 style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 700; color: #E43D12; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 0.5rem 0;">💡 Your Idea Evolution</h2>
+                <p style="font-size: 0.9rem; color: var(--mid-gray); margin: 0 0 0.6rem 0;">Messages exchanged with AI: <strong style="color: var(--ink);">${messagesCount}</strong></p>
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.8rem; align-items: center;">
+                  <div style="border: 1.5px solid #E43D12; border-radius: var(--radius); background: var(--light-gray); padding: 1rem 1.2rem;">
+                    <p style="font-size: 0.75rem; font-weight: 700; color: #E43D12; text-transform: uppercase; letter-spacing: 0.07em; margin: 0 0 0.3rem 0;">Original Idea</p>
+                    <p style="font-size: 1rem; color: var(--ink); margin: 0; line-height: 1.6;">${originalIdea}</p>
                   </div>
-                  <div class="evolution-arrow">→</div>
-                  <div class="evolution-item">
-                    <div class="evolution-label">Final Idea</div>
-                    <div class="evolution-content">${revisedIdea}</div>
+                  <span style="font-size: 1.5rem; color: #E43D12; font-weight: 900;">→</span>
+                  <div style="border: 1.5px solid #E43D12; border-radius: var(--radius); background: var(--light-gray); padding: 1rem 1.2rem;">
+                    <p style="font-size: 0.75rem; font-weight: 700; color: #E43D12; text-transform: uppercase; letter-spacing: 0.07em; margin: 0 0 0.3rem 0;">Final Idea</p>
+                    <p style="font-size: 1rem; color: var(--ink); margin: 0; line-height: 1.6;">${revisedIdea}</p>
                   </div>
                 </div>
               </section>
 
-              <section class="report-section">
-                <h2 class="report-section-title">🤔 Why You Chose This Idea</h2>
-                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                  <p><strong>Your reasoning:</strong></p>
-                  <p style="line-height: 1.6;">${whyChosen}</p>
-                </div>
-              </section>
+              ${agentReportHTML}
 
-              <section class="report-section">
-                <h2 class="report-section-title">⚠️ Challenges You Identified</h2>
-                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                  <p><strong>Uncertainties & concerns:</strong></p>
-                  <p style="line-height: 1.6;">${challenges}</p>
+              <section>
+                <h2 style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 700; color: #E43D12; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 0.5rem 0;">🤖 Reflect on Your Creative Process</h2>
+                <div style="border: 1.5px solid var(--light-gray); border-radius: var(--radius); background: white; padding: 1rem 1.2rem; margin-bottom: 0.5rem;">
+                  <p style="font-size: 0.9rem; font-weight: 600; color: var(--mid-gray); margin: 0 0 0.3rem 0;">How did AI support or hinder your creative thinking?</p>
+                  <p style="font-size: 1rem; color: var(--ink); margin: 0; line-height: 1.6;">${whatHelped}</p>
                 </div>
-              </section>
-
-              <section class="report-section">
-                <h2 class="report-section-title">💬 AI Collaboration Exchange</h2>
-                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                  <p><strong>Messages exchanged:</strong> <span style="font-weight: 800; color: var(--accent-primary);">${messagesCount} message${messagesCount !== 1 ? 's' : ''}</span></p>
+                <div style="border: 1.5px solid var(--light-gray); border-radius: var(--radius); background: white; padding: 1rem 1.2rem; margin-bottom: 0.5rem;">
+                  <p style="font-size: 0.9rem; font-weight: 600; color: var(--mid-gray); margin: 0 0 0.3rem 0;">What strategies did you learn that could aid your creativity in the future?</p>
+                  <p style="font-size: 1rem; color: var(--ink); margin: 0; line-height: 1.6;">${whatDidntWork}</p>
                 </div>
-              </section>
-
-              <section class="report-section">
-                <h2 class="report-section-title">✨ How AI Helped You</h2>
-                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                  <p style="line-height: 1.6;">${whatHelped}</p>
-                </div>
-              </section>
-
-              <section class="report-section">
-                <h2 class="report-section-title">🎯 Where AI Fell Short</h2>
-                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                  <p style="line-height: 1.6;">${whatDidntWork}</p>
-                </div>
-              </section>
-
-              <section class="report-section">
-                <h2 class="report-section-title">🔄 Your AI Decisions</h2>
-                <div class="report-content" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                  <p><strong>Suggestions you accepted vs. rejected:</strong></p>
-                  <p style="line-height: 1.6;">${acceptedSuggestions}</p>
+                <div style="border: 1.5px solid var(--light-gray); border-radius: var(--radius); background: white; padding: 1rem 1.2rem;">
+                  <p style="font-size: 0.9rem; font-weight: 600; color: var(--mid-gray); margin: 0 0 0.3rem 0;">What feedback guided decisions you made through this activity?</p>
+                  <p style="font-size: 1rem; color: var(--ink); margin: 0; line-height: 1.6;">${acceptedSuggestions}</p>
                 </div>
               </section>
 

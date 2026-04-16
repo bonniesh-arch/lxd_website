@@ -1,58 +1,64 @@
 const QUIZ_QUESTIONS = [
   {
-    question: "Why does human creativity and divergent thinking still matter in a world with AI?",
+    question: "How can practicing creative thinking most significantly impact your work?",
     options: [
-      "It allows us to use our judgment and consider multiple perspectives.",
-      "It makes our work more original, meaningful, and human.",
-      "It can lead to better decisions, stronger innovation, and new opportunities."
-    ],
-    feedback: "The World Economic Forum notes that as AI advances, humans will crave more unpredictability and the imperfection of \"human-ness,\" and this will be valued in the future of work.",
-    type: "multiple_choice"
-  },
-  {
-    question: "How can practicing creative thinking impact your work?",
-    options: [
-      "It can help you contribute ideas more confidently.",
-      "It can help you maintain relevance as you use AI more intentionally and creatively.",
-      "It can strengthen your ability to question and remain an active thinker."
-    ],
-    feedback: "Research shows that creative thinking in the workplace helps create a culture of innovation, encourages risk-taking, and enables solving problems efficiently.",
-    type: "multiple_choice"
-  },
-  {
-    question: "What do you hope this learning experience will help you practice?",
-    options: [
-      "Generating ideas without giving up your creative agency.",
-      "Directing the creative process while using AI as a tool for iteration.",
-      "Strengthening your confidence in your own creative thinking.",
+      "Contribute ideas more confidently.",
+      "Maintain relevance as you use AI more intentionally and creatively.",
+      "Strengthen your ability to question and remain an active thinker.",
       "Other"
     ],
     hasOpenEnd: true,
-    feedback: "There is no right or wrong answer. All responses help you reflect on your creative practice and how you'll work with AI.",
+    feedback: "Creative thinking in the workplace helps create a culture of innovation, encourages risk-taking, and enables solving problems efficiently.",
+    type: "mixed"
+  },
+  {
+    question: "Which creativity benefit most resonates with you?",
+    options: [
+      "Using my judgment and considering multiple perspectives.",
+      "Making my work more original, meaningful, and human.",
+      "Making better decisions, stronger innovation, and new opportunities.",
+      "Other"
+    ],
+    hasOpenEnd: true,
+    feedback: "As AI advances, humans will crave more unpredictability and the imperfection of \"human-ness\" in the future of your work.",
+    type: "mixed"
+  },
+  {
+    question: "What do you hope this creative agency activity will help you practice most?",
+    options: [
+      "Generating ideas and directing the creative process while using AI as a tool for iteration.",
+      "Strengthening your confidence in your own creative thinking.",
+      "Reflecting on when your own judgment matters most.",
+      "Other"
+    ],
+    hasOpenEnd: true,
+    feedback: "This journey will promote your strong instincts when using AI. You are ready to move onto the next step.",
     type: "mixed",
     isLastQuestion: true
   }
 ];
 
 let currentQuestion = 0;
+const userAnswers = [null, null, null]; // store answer text for each question
 
 function renderQuestion() {
   const content = document.getElementById('main-content');
   const progressFill = document.getElementById('progress-fill');
-  progressFill.style.width = `${(currentQuestion / QUIZ_QUESTIONS.length) * 100}%`;
+  if (progressFill) progressFill.style.width = `${(currentQuestion / QUIZ_QUESTIONS.length) * 100}%`;
 
   const q = QUIZ_QUESTIONS[currentQuestion];
+  const hasTypeBox = currentQuestion === 0 || currentQuestion === 1 || currentQuestion === 2; // all questions have type box
   const isQ3 = currentQuestion === 2; // Question 3 is index 2
 
   let optionsHTML = q.options.map((option, idx) => {
-    // For question 3, make option D (idx 3) have an input field
-    if (isQ3 && idx === 3) {
+    // For Q2 and Q3, make option D (idx 3) have an input field
+    if (hasTypeBox && idx === 3) {
       return `
         <div style="display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem; background: var(--light-gray); border: 2.5px solid transparent; border-radius: var(--radius); cursor: text; transition: all var(--transition-smooth); box-shadow: var(--shadow-sm);">
           <span style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: var(--accent-primary); border-radius: var(--radius); font-family: var(--font-mono); font-weight: 900; color: white; flex-shrink: 0; font-size: 1.1rem;">D</span>
           <span style="font-weight: 600; color: var(--ink); flex-shrink: 0; font-size: 1.1rem;">Other:</span>
           <input type="text" id="option-d-input" placeholder="type here..." 
-            onkeypress="handleQ3Input(event)"
+            onkeypress="handleTypeBoxInput(event)"
             style="flex: 1; border: none; background: white; font-family: var(--font-sans); font-size: 1.1rem; padding: 0.5rem; outline: none; color: var(--ink); border-radius: 4px;" />
         </div>
       `;
@@ -65,9 +71,9 @@ function renderQuestion() {
     `;
   }).join('');
 
-  // Don't add additional open-ended textarea for Q3
+  // Don't add additional open-ended textarea for Q2 or Q3 (they use the type box)
   let openEndHTML = '';
-  if (q.hasOpenEnd && !isQ3) {
+  if (q.hasOpenEnd && !hasTypeBox) {
     openEndHTML = `
       <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--warm-gray);">
         <label style="display: block; margin-bottom: 1rem; font-weight: 600; color: var(--ink);">
@@ -96,8 +102,8 @@ function renderQuestion() {
     </div>
   `;
 
-  // Focus on the input field for Q3
-  if (isQ3) {
+  // Focus on the input field for Q2 and Q3
+  if (hasTypeBox) {
     setTimeout(() => {
       const input = document.getElementById('option-d-input');
       if (input) input.focus();
@@ -107,6 +113,15 @@ function renderQuestion() {
 
 function selectAnswer(idx) {
   const q = QUIZ_QUESTIONS[currentQuestion];
+
+  // Store the answer text
+  if (idx === 3) {
+    // Type box answer
+    const input = document.getElementById('option-d-input');
+    userAnswers[currentQuestion] = (input && input.value.trim()) ? input.value.trim() : 'Other';
+  } else {
+    userAnswers[currentQuestion] = q.options[idx];
+  }
 
   // Disable all options
   document.querySelectorAll('.quiz-option').forEach(btn => {
@@ -124,7 +139,7 @@ function selectAnswer(idx) {
   showFeedbackModal(q.feedback, isQ3);
 }
 
-function handleQ3Input(event) {
+function handleTypeBoxInput(event) {
   // Trigger selectAnswer on Enter key
   if (event.key === 'Enter') {
     event.preventDefault();
@@ -170,11 +185,12 @@ function showFeedbackModal(feedbackText, isQ3 = false) {
   `;
 
   if (isQ3) {
-    // Special button for question 3 - only show button, no text
+    const q3 = QUIZ_QUESTIONS[2];
     modalContent.innerHTML = `
-      <a href="dashboard.html" class="btn btn-primary" style="display: inline-block; width: auto; padding: 1rem 2rem; font-size: 1rem; text-decoration: none;">
-        Ready to start?
-      </a>
+      <p style="font-size: 1.05rem; line-height: 1.8; color: var(--ink); margin: 0 0 2rem 0;">${q3.feedback}</p>
+      <button class="btn btn-primary" onclick="showAgentReport()" style="display: inline-block; width: auto; padding: 1rem 2rem; font-size: 1rem;">
+        See My Agent Report
+      </button>
     `;
   } else {
     // Regular next button for questions 1 and 2
@@ -222,24 +238,46 @@ function nextQuestion() {
   }
 }
 
-function showResults() {
-  const content = document.getElementById('main-content');
-  const header = document.getElementById('header');
+function showAgentReport() {
+  // Remove modal
+  const modal = document.getElementById('feedback-modal');
+  if (modal) modal.remove();
 
-  // Hide header
-  header.style.display = 'none';
+  // Persist quiz answers for use in the Innovation Journey report
+  localStorage.setItem('agentReportAnswers', JSON.stringify(
+    QUIZ_QUESTIONS.map((q, i) => ({ question: q.question, answer: userAnswers[i] || '—' }))
+  ));
+
+  const content = document.getElementById('main-content');
+
+  const answersHTML = QUIZ_QUESTIONS.map((q, i) => `
+    <div style="margin-bottom: 1.5rem; padding: 1.2rem 1.5rem; background: var(--light-gray); border: 1.5px solid #E43D12; border-radius: var(--radius); text-align: left;">
+      <p style="font-size: 0.95rem; color: var(--ink); font-weight: 600; margin: 0 0 0.5rem 0; line-height: 1.5;">Q${i + 1}: ${q.question}</p>
+      <p style="font-size: 1rem; color: #E43D12; margin: 0; line-height: 1.6;">${userAnswers[i] || '—'}</p>
+    </div>
+  `).join('');
 
   content.innerHTML = `
-    <div class="fade-up" style="text-align: center; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh;">
-      <h2 style="font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 2rem;">ALL QUESTIONS COMPLETE</h2>
+    <div class="fade-up" style="max-width: 640px; margin: 0 auto; padding-bottom: 3rem;">
+      ${answersHTML}
 
-      <p style="color: var(--mid-gray); font-size: 1.1rem; margin-bottom: 3rem; line-height: 1.6;">Ready to begin your creative journey?</p>
-
-      <a href="dashboard.html" class="btn-circle" style="display: inline-flex; text-decoration: none;">
-        <span class="arrow">→</span>
-      </a>
+      <div style="margin: 2.5rem 0; padding-top: 2rem; border-top: 2px solid var(--warm-gray);">
+        <p style="font-size: 1.05rem; line-height: 1.8; color: var(--ink); margin: 0 0 1.2rem 0;">AI cannot replicate your original thoughts. The professionals who thrive with AI aren't the ones who use it most. They're the ones who know how to use it, and when not to. As you discover more about AI and creative thinking, keep your answers in mind and reflect on:</p>
+        <ul style="font-size: 1.05rem; line-height: 1.8; color: var(--ink); margin: 0 0 2.5rem 1.5rem; padding: 0;">
+          <li style="margin-bottom: 0.5rem;">Your personal relationship with AI</li>
+          <li style="margin-bottom: 0.5rem;">What AI is useful for in your work</li>
+          <li style="margin-bottom: 0.5rem;">How you would like to or like not to leverage AI in the digital age</li>
+        </ul>
+        <a href="dashboard.html" class="btn btn-primary" style="display: inline-block; width: 100%; padding: 1rem 2rem; font-size: 1rem; text-decoration: none; text-align: center; box-sizing: border-box;">
+          Ready to Start
+        </a>
+      </div>
     </div>
   `;
+}
+
+function showResults() {
+  showAgentReport();
 }
 
 renderQuestion();
