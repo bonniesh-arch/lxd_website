@@ -60,15 +60,33 @@ export default async function handler(req, res) {
     }
 
     console.log('🔄 Sending to Google Gemini API...');
-    const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${GOOGLE_API_KEY}`,
-      requestBody,
-      {
-        headers: {
-          'Content-Type': 'application/json'
+
+    let response;
+    const maxRetries = 3;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        response = await axios.post(
+          `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`,
+          requestBody,
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        break; // success
+      } catch (retryError) {
+        const status = retryError.response?.status;
+        const isRetryable = status === 503 || status === 429 || status === 500;
+        if (isRetryable && attempt < maxRetries - 1) {
+          const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+          console.log(`⚠️ API returned ${status}, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+          throw retryError;
         }
       }
-    );
+    }
 
     const aiResponse = response.data.candidates[0]?.content?.parts[0]?.text || 'No response generated';
     console.log('✅ Response received from AI');
