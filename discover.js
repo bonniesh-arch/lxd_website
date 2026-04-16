@@ -243,6 +243,10 @@ function showAgentReport() {
   const modal = document.getElementById('feedback-modal');
   if (modal) modal.remove();
 
+  // Update header title to Agent Report
+  const headerTitle = document.querySelector('#header h1');
+  if (headerTitle) headerTitle.textContent = 'Agent Report';
+
   // Persist quiz answers for use in the Innovation Journey report
   localStorage.setItem('agentReportAnswers', JSON.stringify(
     QUIZ_QUESTIONS.map((q, i) => ({ question: q.question, answer: userAnswers[i] || '—' }))

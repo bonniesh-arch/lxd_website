@@ -52,7 +52,7 @@ function renderIdeation() {
   content.innerHTML = `
     <div class="fade-up" style="max-width: 1000px; margin: 0 auto; display: block;">
       <div style="margin-bottom: 1.5rem; flex-shrink: 0;">
-        <h1 style="font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 0.8rem;">Your Design Challenge</h1>
+        <h1 style="font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 0.8rem;">YOUR CHALLENGE</h1>
         <div style="background: var(--accent-primary); color: white; padding: 1.2rem; border-radius: 6px; margin-bottom: 1.5rem;">
           <div style="font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">AI-Generated Task:</div>
           <div style="font-size: 1.2rem; font-family: var(--font-serif); font-weight: 600;">${currentTask}</div>

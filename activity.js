@@ -291,7 +291,7 @@ const StageDesignChallenge = {
 
         <div class="stage-content">
           <div class="challenge-card">
-            <h1 class="stage-title">Your Design Challenge</h1>
+            <h1 class="stage-title">YOUR CHALLENGE</h1>
             <p class="stage-subtitle">This is your starting point. Spend a moment understanding the problem, then generate your ideas.</p>
 
             <div style="border: 1.5px solid #E43D12; border-radius: var(--radius); background: var(--light-gray); padding: 1.5rem 2rem; margin: 1.5rem 0;">

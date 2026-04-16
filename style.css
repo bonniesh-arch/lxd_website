@@ -385,21 +385,21 @@ p {
 }
 
 .btn-philosophy-next {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  border-radius: 50px;
   border: 3px solid #E43D12;
   background: #E43D12;
   color: white;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  padding: 0.75rem 1.75rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: all var(--transition);
   text-decoration: none;
   box-shadow: 0 12px 40px rgba(228, 61, 18, 0.25);
-  font-weight: 900;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .btn-philosophy-next:hover {
